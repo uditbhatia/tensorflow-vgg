@@ -4,7 +4,7 @@ import tensorflow as tf
 import numpy as np
 import time
 import inspect
-import skimage
+# import skimage
 
 VGG_MEAN = [103.939, 116.779, 123.68]
 
@@ -129,35 +129,35 @@ class Vgg19:
         return tf.constant(self.data_dict[name][0], name="weights")
 
 
-def load_image(path):
-    # load image
-    img = skimage.io.imread(path)
-    img = img / 255.0
-    assert (0 <= img).all() and (img <= 1.0).all()
-    # print "Original Image Shape: ", img.shape
-    # we crop image from center
-    short_edge = min(img.shape[:2])
-    yy = int((img.shape[0] - short_edge) / 2)
-    xx = int((img.shape[1] - short_edge) / 2)
-    crop_img = img[yy: yy + short_edge, xx: xx + short_edge]
-    # resize to 224, 224
-    resized_img = skimage.transform.resize(crop_img, (224, 224))
-    return resized_img
+# def load_image(path):
+#     # load image
+#     img = skimage.io.imread(path)
+#     img = img / 255.0
+#     assert (0 <= img).all() and (img <= 1.0).all()
+#     # print "Original Image Shape: ", img.shape
+#     # we crop image from center
+#     short_edge = min(img.shape[:2])
+#     yy = int((img.shape[0] - short_edge) / 2)
+#     xx = int((img.shape[1] - short_edge) / 2)
+#     crop_img = img[yy: yy + short_edge, xx: xx + short_edge]
+#     # resize to 224, 224
+#     resized_img = skimage.transform.resize(crop_img, (224, 224))
+#     return resized_img
 
 if __name__ == "__main__":
-    img1 = load_image("./test_data/tiger.jpeg")
-    img2 = load_image("./test_data/puzzle.jpeg")
+    # img1 = load_image("./test_data/tiger.jpeg")
+    # img2 = load_image("./test_data/puzzle.jpeg")
+    #
+    # batch1 = img1.reshape((1, 224, 224, 3))
+    # batch2 = img2.reshape((1, 224, 224, 3))
 
-    batch1 = img1.reshape((1, 224, 224, 3))
-    batch2 = img2.reshape((1, 224, 224, 3))
-
-    batch = np.concatenate((batch1, batch2), 0)
+    # batch = np.concatenate((batch1, batch2), 0)
 
     # with tf.Session(config=tf.ConfigProto(gpu_options=(tf.GPUOptions(per_process_gpu_memory_fraction=0.7)))) as sess:
     with tf.device('/cpu:0'):
         with tf.Session() as sess:
             images = tf.placeholder("float", [2, 224, 224, 3])
-            feed_dict = {images: batch}
+            # feed_dict = {images: batch}
 
             vgg = Vgg19()
             with tf.name_scope("content_vgg"):
@@ -170,7 +170,7 @@ if __name__ == "__main__":
                 inputs={'x': images},
                 outputs={"y": y})
 
-            prob = sess.run(vgg.prob, feed_dict=feed_dict)
-            print(prob)
+            # prob = sess.run(vgg.prob, feed_dict=feed_dict)
+            # print(prob)
             # utils.print_prob(prob[0], './synset.txt')
             # utils.print_prob(prob[1], './synset.txt')
