@@ -84,6 +84,8 @@ class Vgg19:
         self.data_dict = None
         print(("build model finished: %ds" % (time.time() - start_time)))
 
+        return self.fc7
+
     def avg_pool(self, bottom, name):
         return tf.nn.avg_pool(bottom, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME', name=name)
 
@@ -156,19 +158,17 @@ if __name__ == "__main__":
     # with tf.Session(config=tf.ConfigProto(gpu_options=(tf.GPUOptions(per_process_gpu_memory_fraction=0.7)))) as sess:
     with tf.device('/cpu:0'):
         with tf.Session() as sess:
-            images = tf.placeholder("float", [2, 224, 224, 3])
+            images = tf.placeholder("string", [2, 224, 224, 3])
             # feed_dict = {images: batch}
 
             vgg = Vgg19()
             with tf.name_scope("content_vgg"):
-                vgg.build(images)
-
-            y = tf.placeholder('float', [None, 1, 4096])
+                fc7 = vgg.build(images)
             tf.saved_model.simple_save(
                 sess,
-                os.path.join("/opt/ml/model", 'vgg197', '1'),
+                os.path.join("/tmp/model", 'vgg198', '1'),
                 inputs={'x': images},
-                outputs={"y": y})
+                outputs={"y": fc7})
 
             # prob = sess.run(vgg.prob, feed_dict=feed_dict)
             # print(prob)
