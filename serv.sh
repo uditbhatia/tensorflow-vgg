@@ -1,0 +1,1 @@
+docker run -p 8501:8501 --mount type=bind,source=/workplace/projects/tf/tensorflow-vgg/model/,target=/models/vgg193 -e MODEL_NAME=vgg193 -t tensorflow/serving

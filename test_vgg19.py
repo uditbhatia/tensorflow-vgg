@@ -3,6 +3,7 @@ import tensorflow as tf
 
 import vgg19
 import utils
+import os
 
 img1 = utils.load_image("./test_data/tiger.jpeg")
 img2 = utils.load_image("./test_data/puzzle.jpeg")
@@ -21,6 +22,13 @@ with tf.device('/cpu:0'):
         vgg = vgg19.Vgg19()
         with tf.name_scope("content_vgg"):
             vgg.build(images)
+
+        y = tf.placeholder('float', [None, 1, 4096])
+        tf.saved_model.simple_save(
+            sess,
+            os.path.join("/tmp/model", 'vgg197','1'),
+            inputs={'x': images},
+            outputs={"y": y})
 
         prob = sess.run(vgg.prob, feed_dict=feed_dict)
         print(prob)
