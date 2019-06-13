@@ -18,20 +18,23 @@ class Vgg19:
             vgg19_npy_path = path
             print(vgg19_npy_path)
 
+
         self.data_dict = np.load(vgg19_npy_path, encoding='latin1', allow_pickle=True).item()
         print("npy file loaded")
 
-    def build(self, rgb_str):
+    def build(self, rgb):
         """
         load variable from npy to build the VGG
 
         :param rgb: rgb image [batch, height, width, 3] values scaled [0, 1]
         """
-        print("RGB arr type: {}".format(type(rgb_str)))
-        rgb = tf.cast(rgb_str, "float")
+
+        # print("RGB arr type: {}".format(type(rgb_str)))
+        # rgb = tf.cast(rgb_str, "float")
         print("RGB TYpe: {}".format(rgb))
         start_time = time.time()
         print("build model started")
+
         rgb_scaled = rgb * 255.0
 
         # Convert RGB to BGR
@@ -160,8 +163,9 @@ if __name__ == "__main__":
     # with tf.Session(config=tf.ConfigProto(gpu_options=(tf.GPUOptions(per_process_gpu_memory_fraction=0.7)))) as sess:
     with tf.device('/cpu:0'):
         with tf.Session() as sess:
-            # images = tf.placeholder("float", [1, 224, 224, 3])
-            images = tf.placeholder("string", [1, 224, 224, 3])
+            images = tf.placeholder("float", [1, 224, 224, 3])
+            # images = tf.placeholder("string")
+
             # feed_dict = {images: batch}
 
             vgg = Vgg19()
